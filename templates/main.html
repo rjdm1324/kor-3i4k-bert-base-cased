@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>kor-3i4k-bert-base-cased model</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<script type="text/javascript">
+    let flag = undefined;
+    let chars = undefined;
+
+    window.onload = () => {
+        flag = false;       // 더블 클릭 체크
+    }
+
+    function double_submit_check() {
+        if (flag) {
+            console.log("double");
+            return true;
+        }
+        else {
+            flag = true;
+
+            return false;
+        }
+    }
+
+    function send_req() {
+        if (double_submit_check()){
+            return ;
+        }
+
+        let sentence = document.getElementById("sentence").value;
+
+        if (sentence == '') {
+            document.getElementById('warning').innerText = 'Please fill text!';
+            flag = false;
+            return ;
+        }
+
+        const formData = new FormData();
+        const url = "/generate";
+        let start = 0;
+
+        formData.append('sentence', sentence);
+
+        fetch (url, { method: 'POST', body: formData, })
+        .then(response => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                flag = false;
+            }
+        }).catch(err => {
+            flag = false;
+            document.getElementById('warning').innerText = err;
+        }).then(data => {
+            const result = document.getElementById('result');
+            const score_list = [data[0][0]['score'],data[0][1]['score'],data[0][2]['score'],data[0][3]['score'],data[0][4]['score'],data[0][5]['score'],data[0][6]['score']];
+            const i = score_list.indexOf(Math.max(...score_list));
+            result.innerHTML = "너의 말의 의도는 " +data[0][i]['label'] +" 이구나.";
+            flag = false;
+        }).catch(err => {
+            flag = false;
+            document.getElementById('warning').innerText = err;
+        });
+
+    }
+
+</script>
+<body>
+    <div class="styles">
+        <style>
+
+                #button{
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    border-top-left-radius: 5pt;
+                    border-top-right-radius: 5pt;
+                    border-bottom-left-radius: 5pt;
+                    border-bottom-right-radius: 5pt;
+                    margin-left: 35px;
+                }
+
+                #length{
+                    width: 70px;
+                    height: 30px;
+                    border-top-left-radius: 5pt;
+                    border-top-right-radius: 5pt;
+                    border-bottom-left-radius: 5pt;
+                    border-bottom-right-radius: 5pt;
+                }
+
+                table {
+                  border-spacing: 10px;
+                  border-collapse: separate;
+                }             
+        </style>
+    </div>
+    <div class="container">
+        <div class="jumbotron mt-3">
+            <div class="intro">
+                <br>
+                <!-- Project title -->
+                <h1>kor-3i4k-bert-base-cased(Korean)</h1><br>
+                <p>The model classifies the intent of the sentence into one of seven.</p>
+                <p>fragment , statement , question , command , rhetorical question , rhetorical command and intonation-depedent utterance</p>
+                <p>Try using the kor-3i4k-bert-base-cased model as a bert-base-multilingual-cased model trained on 3i4k dataset.</p>
+                <a>Github : </a> <a href="https://github.com/warnikchow/3i4k" target="_blank">3i4k</a><br>
+                <a>Open API : </a> <a href="https://ainize.ai/rjdm1324/kor-3i4k-bert-base-cased" target="_blank">On Ainize</a><br>
+                <a>License : </a> <a href="https://github.com/warnikchow/3i4k/blob/master/README.md" target="_blank">CC-BY-SA-4.0</a><br>
+            </div>
+
+            <hr width="90%">
+
+            <div class="Notice">
+                <h3>Notice</h3>
+                <ul>
+                    <li>This model trained with Korean dataset.</li>
+                    <li>You can use English, but don't expect accuracy.</li>
+                    <li>If the context is longer than 1200 characters, the context may be cut in the middle and the result may not come out well.</li>
+                </ul>
+            </div>
+
+            <hr width="90%">
+
+            <div class="sample">
+                <h3><label>Example</label></h3>
+                <h5><label>Sentence</label></h5>
+                <label>오늘 무슨 일이 있었니?</label>
+                <h5><label>Result</label></h5>
+                <label>question</label>
+            </div>
+
+            <br><hr width="90%">
+
+           
+            <div class="generate" style="width: 80%; height: auto;">
+                <h3>Try it!</h3><br>
+                <h3>Sentence</h3><br>
+                <img src="{{ url_for('static', filename=image_file) }}" style="float: left; width: 150px; height:150px;">
+                <div><textarea type="text" id="sentence" style="float: left; width:500px; height: 150px; margin-left: 100px;" ></textarea></div>
+                <button class="btn btn-primary btn=lg" type="submit" id="button" onclick="send_req();">Summit</button><br>
+                <b><label id="warning" style="color:red;"></label></b>
+            </div><div style="clear:both;"></div>
+            <div class="result">
+                <h3><label>Result</label></h3>
+                <img src="{{ url_for('static', filename=image_file) }}" style="float:left; width: 150px; height: 150px;">
+                <div><textarea type="text" id="result" style="float: left; width:500px; height: 150px; margin-left: 100px;" ></textarea></div>
+            </div><div style="clear:both;"></div>
+          
+        </div>
+    </div>
+</body>
+<footer>
+    <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</footer>
+</html>
