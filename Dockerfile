@@ -9,6 +9,6 @@ WORKDIR /app
 
 COPY . .
 
-EXPOSE 5001
+EXPOSE 5000
 
 CMD ["flask", "run", "--host", "0.0.0.0"]
