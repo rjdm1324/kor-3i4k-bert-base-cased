@@ -17,7 +17,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  headline:
+                  sentence:
                     type: string
                     description: "sentence"
 
