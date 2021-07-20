@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: 'sentence classification'
+servers:
+- url: https://main-kor-3i4k-bert-base-cased-rjdm1324.endpoint.ainize.ai/
+paths:
+  /generate:
+    post:
+      tags:
+        - request
+      requestBody:
+          description: sentence 입력
+          required: true
+          content:
+            application/form-data:
+              schema:
+                type: object
+                properties:
+                  headline:
+                    type: string
+                    description: "sentence"
+
+      responses:
+        '200':
+          description: 출력
+          content:
+            application/json:
+             schema:
+                type: object
+                properties:
+                    0:
+                      type: object
+                      example: [{ "label": fregment, "score": "score" },
+                                { "label": statement, "score": "score" },
+                                { "label": question, "score": "score" },
+                                { "label": command, "score": "score" },
+                                { "label": rhetorical question, "score": "score" },
+                                { "label": rhetorical command, "score": "score" },
+                                { "label": intonation-depedent utterance, "score": "score" },]
+        '400':
+          description: Bad Request Error
+                          
+        '429':
+          description: Too many requests
+                                 
+        '500':
+          description: Server-side Error
+  /queue_clear:
+    get:
+      tags:
+        - request queue clear
+      responses:
+        '200':
+          description: "Clear"
+  /healthz: 
+    get:
+      tags:
+       - healthy check
+      responses:
+        '200':
+          description: "Health"
+      
+                
+                    
